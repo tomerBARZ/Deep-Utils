@@ -1,0 +1,1 @@
+@RD /S /Q "../source/image_classifier

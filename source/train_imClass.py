@@ -5,49 +5,33 @@ import autokeras as ak
 import numpy as np
 import tensorflow as tf
 import argparse
+import json
 
-parser = argparse.ArgumentParser(description='Start an Image Classifier.')
-parser.add_argument('maxDataSize',help='The max number of rows to load from the data csv')
-parser.add_argument('trainTestRatio',help='The ratio between training set size and testing set size')
-parser.add_argument('imgSizeRatio',help='The percent scale of the input images')
-parser.add_argument('trainEpochs',help='The amount of epochs to train on')
-parser.add_argument('maxTrials',help='The max number of models to try')
-args = parser.parse_args()
+file = open('../operations/parameters.json')
+jdata = json.load(file)
 
-maxDataSize = int(args.maxDataSize)
-ratio = float(args.trainTestRatio)
-scale = float(args.imgSizeRatio)
-epochs = int(args.trainEpochs)
+maxDataSize = jdata['maxDataSize']
+ratio = jdata['trainTestRatio']
+scale = jdata['imgSizeRatio']
+epochs = jdata['trainEpochs']
+trials = jdata['maxTrials']
 
 labelData = getLabels(maxDataSize)
 imgData = loadImages("../data/IMGS/",len(labelData),scale)
 
 xtrain, xtest = divideData(imgData,ratio)
-ytrain, ytest = divideData(labelData,1 - ratio)
+ytrain, ytest = divideData(labelData,ratio)
 
-classifier = ak.ImageClassifier(max_trials=1)
+classifier = ak.ImageClassifier(max_trials=trials)
 
-print(msgColor)
-print("\nTraining Models----")
+print(messageColor)
+print("\nStarted Training")
 print(spamColor)
-trainResults = classifier.fit(xtrain,ytrain,epochs=50,validation_data=(xtest,ytest))
-print(msgColor)
-print("Training Loss:",trainResults)
-print(spamColor)
+classifier.fit(xtrain,ytrain,epochs=epochs,validation_data=(xtest,ytest))
+print(messageColor)
+print("Training Complete")
+waitForExit()
 
-# print("\nEvaluating Best Model----")
-# eval_loss = classifier.evaluate(xtest, ytest,verbose=0)
-# print("Evaluation Loss:",eval_loss)
-
-
-# print("\nShowing Results----")
-# img = xtest[-1]
-# data = np.array([img])
-
-# prediction = classifier.predict(data,verbose=0) # an array of predictions for an array of data, each prediction is an array of values
-# print("\nPrediction:",prediction[0,0]) # the first value of the first prediction
-# cv2.imshow('IMG',img)
-# cv2.waitKey(0)
 
 model = classifier.export_model()
-model.save("model_autokeras.h5")
+model.save("../saved_model.h5")

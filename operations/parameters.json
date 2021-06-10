@@ -1,0 +1,7 @@
+{
+    "maxDataSize":3000,
+    "trainTestRatio":0.7,
+    "imgSizeRatio":0.5,
+    "trainEpochs":24,
+    "maxTrials":12
+}

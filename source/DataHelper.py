@@ -21,13 +21,22 @@ def loadImages(dir,amount = 10,size = 1,verbal = False):
 def divideData(data,ratio = 0.5):
     return data[:int(len(data) * ratio)], data[int(len(data) * ratio):]
 
+def waitForExit():
+    print(messageColor)
+    input("\nPress Enter to exit...")
+    print(resetColor)
+
 def getLabels(amount = 10):
     with open('../data/data.csv',newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         labels = []
 
         for row in reader:
-            labels.append(row[1:])
+            vals = []
+            for val in row[1:]:
+                if(str(val).isnumeric()):
+                    vals.append(float(val))
+            labels.append(vals)
         
         if(len(labels) < amount):
             return np.array(labels)
