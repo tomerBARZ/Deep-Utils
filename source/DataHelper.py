@@ -42,6 +42,65 @@ def getLabels(amount = 10):
             return np.array(labels)
         return np.array(labels[:amount])
 
+def getData(amount = 10,imgSize = 1,yPosition = 1):
+    with open('../data/data.csv','r',newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        yData = []
+
+        xData = []
+
+        
+        valTypes = None
+        
+        first = True
+
+        for row in reader:
+            if(first):
+                first = False
+                valTypes = row
+                continue
+
+            vals = []
+            
+            for i in range(len(row[yPosition:])):
+                val = row[i+yPosition]
+                valType = valTypes[i+yPosition]
+                if(valType == 'int'):
+                    vals.append(int(val))
+                elif(valType == 'float'):
+                    vals.append(float(val))
+                elif(valType == 'image'):
+                    img = Image.open('../data/'+val) #load the image
+                    img.thumbnail((img.size[0]*imgSize,img.size[1]*imgSize),Image.ANTIALIAS) #resize the image
+                    vals.append(np.array(img)) #add to array
+
+            yData.append(vals)
+
+            vals = []
+            for i in range(len(row[:yPosition])):
+                val = row[i]
+                valType = valTypes[i]
+                if(valType == 'int'):
+                    vals.append(int(val))
+                elif(valType == 'float'):
+                    vals.append(float(val))
+                elif(valType == 'image'):
+                    img = Image.open('../data/'+val) #load the image
+                    img.thumbnail((img.size[0]*imgSize,img.size[1]*imgSize),Image.ANTIALIAS) #resize the image
+                    vals.append(np.array(img)) #add to array
+
+            xData.append(vals)
+
+        
+        xData = np.asarray(xData)
+        yData = np.asarray(yData)
+
+        print(xData.shape,yData.shape)
+
+        if(len(yData) < amount):
+            return xData ,yData
+        return xData[:amount] ,yData[:amount]
+        
 messageColor = colored.fg(118)
 errorColor = colored.fg(196)
 noticeColor = colored.fg(4)

@@ -16,12 +16,12 @@ ratio = jdata['trainTestRatio']
 scale = jdata['imgSizeRatio']
 epochs = jdata['trainEpochs']
 trials = jdata['maxTrials']
+ypos = jdata['yPosition']
 
-labelData = getLabels(maxDataSize)
-imgData = loadImages("../data/IMGS/",len(labelData),scale)
+xData, yData = getData(maxDataSize,scale,ypos)
 
-_, xtest = divideData(imgData,ratio)
-_, ytest = divideData(labelData,ratio)
+xtrain, xtest = divideData(xData,ratio)
+ytrain, ytest = divideData(yData,ratio)
 
 print(messageColor)
 print("Loading Model")
@@ -33,15 +33,25 @@ print(messageColor)
 print("Displaying Preview")
 print(spamColor)
 
-origdata = xtest[int(random.uniform(0,30))]
-data = np.array([origdata])
+def show():
+    origdata = xtest[int(random.uniform(0,30))]
+    data = np.array([origdata])
 
-prediction = model.predict(data,verbose=0) # an array of predictions for an array of data, each prediction is an array of values
+    prediction = model.predict(data,verbose=0) # an array of predictions for an array of data, each prediction is an array of values
 
-print(messageColor)
-try:
-    img = Image.fromarray(origdata.astype('uint8')).show()
-except:
-    print("Input:",data[0])
-print("\nPrediction:",prediction[0]) # the first value of the first prediction
-waitForExit()
+    print(messageColor)
+    try:
+        img = Image.fromarray(origdata[0].astype('uint8')).show()
+    except:
+        print("Input:",data[0])
+        print("InputShape:",data[0].shape)
+    print("\nPrediction:",prediction[0]) # the first value of the first prediction
+
+    print(messageColor)
+    if(input("\nPress Enter to exit or type Y and then Enter to run again: ").capitalize() == 'Y'):
+        show()
+    print(resetColor)
+        
+
+show()
+

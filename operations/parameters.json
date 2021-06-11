@@ -2,6 +2,7 @@
     "maxDataSize":3000,
     "trainTestRatio":0.7,
     "imgSizeRatio":0.5,
-    "trainEpochs":24,
-    "maxTrials":12
+    "trainEpochs":10,
+    "maxTrials":2,
+    "yPosition":1
 }

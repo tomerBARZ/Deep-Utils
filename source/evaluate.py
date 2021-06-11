@@ -14,12 +14,12 @@ ratio = jdata['trainTestRatio']
 scale = jdata['imgSizeRatio']
 epochs = jdata['trainEpochs']
 trials = jdata['maxTrials']
+ypos = jdata['yPosition']
 
-labelData = getLabels(maxDataSize)
-imgData = loadImages("../data/IMGS/",len(labelData),scale)
+xData, yData = getData(maxDataSize,scale,ypos)
 
-_, xtest = divideData(imgData,ratio)
-_, ytest = divideData(labelData,ratio)
+xtrain, xtest = divideData(xData,ratio)
+ytrain, ytest = divideData(yData,ratio)
 
 print(messageColor)
 print("Loading Model")

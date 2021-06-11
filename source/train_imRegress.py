@@ -22,7 +22,7 @@ xData, yData = getData(maxDataSize,scale,ypos)
 xtrain, xtest = divideData(xData,ratio)
 ytrain, ytest = divideData(yData,ratio)
 
-classifier = ak.ImageClassifier(max_trials=trials)
+classifier = ak.ImageRegressor(max_trials=trials)
 
 print(messageColor)
 print("\nStarted Training")
